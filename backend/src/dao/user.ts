@@ -1,4 +1,5 @@
 import { User } from "@/models/user";
+import { Op } from "sequelize";
 
 export class UserDao {
   constructor() {}
@@ -32,4 +33,20 @@ export class UserDao {
     })
     return updatedUser
   };
+
+  public static getUserById = async (id: string) => {
+    const user = await User.findByPk(id)
+    return user
+  }
+
+  public static getUsersExceptId = async (id: string) => {
+    const users = await User.findAll({
+      where: {
+        id: {
+          [Op.not]: id
+        }
+      }
+    })
+    return users
+  }
 }
