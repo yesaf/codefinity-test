@@ -5,23 +5,34 @@ export default {
     extend: {
       colors: {
         blue: {
-          light: "#76A5C1",
-          DEFAULT: "#428ACA",
+          light: "#74b9ef",
+          DEFAULT: "#428bca",
+          dark: "#357ebc",
+          text: "#3a87ae",
         },
         gray: {
           light: "#D6DFE7",
-          mid: "#BDCBD9",
+          mid: "#becbd9",
           dark: "#9CAAB9",
           bg: "#586670",
+          text: "#203245",
         },
-        "peach-light": "#F0CAB3",
+        peach: {
+          light: "#f0cbb3",
+          text: "#703a18",
+        },
         txt: {
           white: "#FFFFFF",
           primary: "#333333",
-          secondary: "#B8B8B8",
+          secondary: "#9aa8b7",
+          light: "#4a4d52",
         },
+        divider: "#dddddd",
+        green: "#20d63e",
       },
-
+      maxWidth: {
+        desktop: "1140px",
+      },
     },
   },
   plugins: [],

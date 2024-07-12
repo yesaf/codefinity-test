@@ -10,15 +10,27 @@ type Props = {
 
 export const Message: React.FC<Props> = ({ message, showSeenTime }) => {
   const isCurrentUserSender = currentUser.id === message.sender.id;
-  const headClassname = classnames("flex justify-between px-2 py-3", {
-    "bg-peach-light": isCurrentUserSender,
-    "bg-gray-mid": !isCurrentUserSender,
+  const containerClassName = classnames(
+    "w-[72%] shadow-md flex flex-col relative mb-4 flex-shrink-0",
+    {
+      "mr-5 ml-auto": isCurrentUserSender,
+      "ml-5 mr-auto": !isCurrentUserSender,
+    },
+  );
+  const headClassName = classnames("flex justify-between py-2.5 px-4 text-sm font-medium rounded-t-lg", {
+    "bg-peach-light text-peach-text": isCurrentUserSender,
+    "bg-gray-mid text-gray-text": !isCurrentUserSender,
   });
 
   return (
-    <div className="max-w-[77%] pr-2.5 rounded-md shadow-md flex flex-col relative">
-      <div className={headClassname}>{message.sender.name}</div>
-      <div className="px-2 py-3">{message.text}</div>
+    <div className={containerClassName}>
+      <div className={headClassName}>{message.sender.name}</div>
+      <div className="py-2.5 px-4 bg-white rounded-b-lg">{message.text}</div>
+      <div className={
+        isCurrentUserSender
+        ? "message-tail-right bottom-2.5 border-l-white"
+        : "message-tail-left bottom-2.5 border-r-white"
+      } />
       {showSeenTime && (
         <span className="absolute mt-2 top-full text-txt-secondary">Seen {message.seenAt}</span>
       )}

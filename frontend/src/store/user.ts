@@ -11,5 +11,5 @@ export const anotherUser: TUser = {
   id: "2",
   name: "Valera Black",
   avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-  isOnline: true
+  isOnline: false
 }
