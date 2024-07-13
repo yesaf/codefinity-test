@@ -23,7 +23,7 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div className="w-[260px] bg-white flex flex-col">
-      <div className="flex text-sm h-[42px]">
+      <div className="flex text-sm h-[42px] flex-shrink-0">
         <button className={onlineBtnClass} onClick={() => setActiveTab(Tab.Online)}>
           Online
         </button>
@@ -31,8 +31,11 @@ export const Sidebar: React.FC = () => {
           All
         </button>
       </div>
-      <div className="flex flex-col mt-2.5 flex-1">
-        {[currentUser, anotherUser].map((user) => (
+      <div className="flex flex-col mt-2.5 flex-1 overflow-auto scrollbar">
+        {[
+          currentUser,
+          anotherUser,
+        ].map((user) => (
           <UserCard user={user} isSelected={user.id === currentUser.id} />
         ))}
       </div>

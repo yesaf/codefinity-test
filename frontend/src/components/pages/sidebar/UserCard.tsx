@@ -13,7 +13,7 @@ export const UserCard: React.FC<Props> = ({ user, isSelected }) => {
   })
   return (
     <div className={cardContainerClass}>
-      <div className="relative">
+      <div className="relative flex-shrink-0">
         <img className="size-[60px]" src={user.avatar} />
         {user.isOnline && (
           <div className="absolute rounded-full bg-green size-[15px] -right-[3px] -bottom-[3px]" />
