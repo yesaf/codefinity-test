@@ -1,6 +1,7 @@
 import { unauthorized } from "@hapi/boom";
 import { NextFunction, Request, Response } from "express";
 import { UserDao } from "@/dao/user";
+import { ChatDao } from "@/dao/chat";
 
 export class UserController {
   constructor() {}
@@ -50,4 +51,12 @@ export class UserController {
     }
   };
 
+  public getUserChats = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const user = await ChatDao.getChatsByUserId(req.params.id);
+      return res.status(200).send(user);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

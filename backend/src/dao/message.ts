@@ -5,7 +5,7 @@ import { Op } from "sequelize";
 export class MessageDao {
   constructor() {}
 
-  public static sendMessage = async (data: Omit<Message, "id">) => {
+  public static createMessage = async (data: Partial<Message>) => {
     const message = await Message.create(data);
     return message;
   };

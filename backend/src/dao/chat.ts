@@ -8,8 +8,9 @@ export class ChatDao {
 
   public static createChat = async (users: string[]) => {
     const chat = await Chat.create();
-    await chat.$set("users", users);
-    return chat;
+    await chat.addUsers(users);
+
+    return this.getChatById(chat.id);
   }
 
   public static getChatById = async (id: string) => {
@@ -23,5 +24,24 @@ export class ChatDao {
       ],
     });
     return chat;
+  }
+
+  public static getChatsByUserId = async (userId: string) => {
+    const chats = await Chat.findAll({
+      include: [
+        {
+          model: User,
+          as: "users",
+          attributes: ["id", "name", "avatar"],
+          through: {
+            where: {
+              userId,
+            },
+            attributes: [],
+          },
+        },
+      ],
+    });
+    return chats;
   }
 }

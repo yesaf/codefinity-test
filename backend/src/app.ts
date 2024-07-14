@@ -9,12 +9,15 @@ import { Boom, isBoom } from "@hapi/boom";
 import { UserRouter } from "@/routers/user";
 
 import { socketServer } from "@/socket/socket";
+import { initializeBots } from "./utils/bots";
 
 (async () => {
   const app = express();
   const PORT = 3000;
 
-  await sequelize.sync({ force: true, alter: true });
+  await sequelize.sync({ force: true });
+
+  const bots = initializeBots();
 
   app.use(express.json());
   app.use(cors());
@@ -53,7 +56,7 @@ import { socketServer } from "@/socket/socket";
     },
   });
 
-  socketServer(io);
+  socketServer(io, bots);
 
   server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

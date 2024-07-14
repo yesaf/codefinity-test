@@ -21,6 +21,15 @@ export class Chat extends Model {
 
   @BelongsToMany(() => User, () => UserChat)
   users: User[];
+
+  async addUsers(users: string[]) {
+    await UserChat.bulkCreate(
+      users.map((userId) => ({
+        userId,
+        chatId: this.id,
+      }))
+    );
+  }
 }
 
 
