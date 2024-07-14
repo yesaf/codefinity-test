@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b",
     "server": "node -r ts-node/register/transpile-only -r tsconfig-paths/register dist/app.js",
-    "start": "pnpm run build & pnpm run server"
+    "start": "pnpm run build && pnpm run server"
   },
   "keywords": [],
   "author": "",

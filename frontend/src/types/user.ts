@@ -3,5 +3,17 @@ export type TUser = {
   name: string,
   description?: string,
   avatar: string,
-  isOnline: boolean,
+  online: boolean,
+}
+
+export type TRandomUserData = {
+  results: {
+    name: {
+      first: string,
+      last: string,
+    },
+    picture: {
+      large: string,
+    },
+  }[],
 }

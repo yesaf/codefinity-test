@@ -32,11 +32,8 @@ export const Sidebar: React.FC = () => {
         </button>
       </div>
       <div className="flex flex-col mt-2.5 flex-1 overflow-auto scrollbar">
-        {[
-          currentUser,
-          anotherUser,
-        ].map((user) => (
-          <UserCard user={user} isSelected={user.id === currentUser.id} />
+        {[currentUser, anotherUser].map((user) => (
+          <UserCard key={user.id} user={user} isSelected={user.id === currentUser.id} />
         ))}
       </div>
       <div className="px-3.5 py-5">

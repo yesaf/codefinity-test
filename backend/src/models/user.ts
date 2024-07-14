@@ -7,7 +7,11 @@ import {
   Model,
   PrimaryKey,
   Table,
+  BelongsToMany,
 } from "sequelize-typescript";
+
+import { Chat } from "@/models/chat";
+import { UserChat } from '@/models/userChat';
 
 @Table({ modelName: "User", timestamps: false })
 export class User extends Model {
@@ -19,7 +23,7 @@ export class User extends Model {
 
   @AllowNull(false)
   @Column(DataType.STRING)
-  username: string;
+  name: string;
 
   @AllowNull(false)
   @IsUrl
@@ -29,4 +33,10 @@ export class User extends Model {
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   online: boolean;
+
+  @Column(DataType.STRING)
+  description: string;
+
+  @BelongsToMany(() => Chat, () => UserChat)
+  chats: Chat[];
 }

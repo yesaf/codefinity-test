@@ -32,8 +32,8 @@ export const Chat: React.FC = () => {
       <UserProfile user={currentUser} />
       <div className="flex-1 px-2.5 pt-5 overflow-hidden">
         <div className="flex flex-col h-full max-h-full overflow-auto scrollbar">
-          {messages.map((message) => (
-            <Message message={message} />
+          {messages.map((message, index) => (
+            <Message key={index} message={message} />
           ))}
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { Chat } from "@/models/chat";
 import { User } from "@/models/user";
 import { Op } from "sequelize";
 
@@ -49,4 +50,17 @@ export class UserDao {
     })
     return users
   }
+
+  public static getUserChats = async (id: string) => {
+    const user = await User.findByPk(id, {
+      include: [
+        {
+          model: Chat,
+          as: "chats",
+          attributes: ["id", "users"],
+        },
+      ],
+    });
+    return user?.chats;
+  };   
 }

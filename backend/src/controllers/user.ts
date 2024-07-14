@@ -29,6 +29,12 @@ export class UserController {
   public getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const user = await UserDao.getUserById(req.params.id);
+
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found",
+        });
+      }
       return res.status(200).send(user);
     } catch (error) {
       next(error);
