@@ -1,6 +1,7 @@
 import axios from "axios";
 import httpClient from "./client";
 import { TRandomUserData, TUser } from "@/types/user";
+import { TChat } from "@/types/chat";
 
 export const getUsers = async (): Promise<TUser[]> => {
   const response = await httpClient.get("/users");
@@ -27,7 +28,7 @@ export const getRandomUser = async (): Promise<TRandomUserData> => {
   return response.data;
 }
 
-export const getUserChats = async (userId: string): Promise<TUser[]> => {
+export const getUserChats = async (userId: string): Promise<TChat[]> => {
   const response = await httpClient.get(`/users/${userId}/chats`);
   return response.data;
 }

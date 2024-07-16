@@ -33,4 +33,9 @@ export class Message extends Model {
   @AllowNull(false)
   @Column(DataType.STRING)
   text: string;
+
+  @AllowNull(true)
+  @Column(DataType.DATE)
+  seenAt: Date;
+
 }

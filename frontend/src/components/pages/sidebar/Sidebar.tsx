@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classnames from "classnames";
-import { anotherUser, currentUser } from "@/store/user";
+
 import { UserCard } from "./UserCard";
+
+import { useChatsStore } from "@/store/chats";
+import { useUserStore } from "@/store/user";
+
+import { TUser } from "@/types/user";
+
+import * as UsersClient from "@/api/rest/users";
 
 enum Tab {
   Online = "online",
@@ -11,6 +18,38 @@ enum Tab {
 export const Sidebar: React.FC = () => {
   const [activeTab, setActiveTab] = useState(Tab.All);
   const [searchText, setSearchText] = useState("");
+
+  const { currentUser } = useUserStore();
+  const { chats, selectedChat, selectChat, setChats } = useChatsStore();
+
+  // Support only 2-user chats for now
+  const users = useMemo(() => {
+    console.log(chats, currentUser);
+    return chats.reduce((acc, chat) => {
+      const anotherUser = chat.users.find((user) => user.id !== currentUser?.id)!;
+      acc.push({ user: anotherUser, chatId: chat.id });
+      return acc;
+    }, [] as { user: TUser; chatId: string }[]);
+  }, [chats, currentUser]);
+
+  const filteredUsers = useMemo(() => {
+    if (searchText === "") {
+      return users;
+    }
+
+    return users
+      .filter(({ user }) => user.name.toLowerCase().includes(searchText.toLowerCase()))
+      .filter(({ user }) => activeTab === Tab.All || user.online);
+  }, [users, searchText, activeTab]);
+
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+    UsersClient.getUserChats(currentUser.id).then((chats) => {
+      setChats(chats);
+    });
+  }, [currentUser, setChats]);
 
   const onlineBtnClass = classnames("flex-[0.5] border-b border-transparent text", {
     "border-r border-divider bg-[#f8f8f8] text-[#777777]": activeTab !== Tab.Online,
@@ -32,8 +71,13 @@ export const Sidebar: React.FC = () => {
         </button>
       </div>
       <div className="flex flex-col mt-2.5 flex-1 overflow-auto scrollbar">
-        {[currentUser, anotherUser].map((user) => (
-          <UserCard key={user.id} user={user} isSelected={user.id === currentUser.id} />
+        {filteredUsers.map(({ user, chatId }) => (
+          <UserCard
+            key={user.id}
+            user={user}
+            isSelected={chatId === selectedChat?.id}
+            onClick={() => selectChat(chatId)}
+          />
         ))}
       </div>
       <div className="px-3.5 py-5">

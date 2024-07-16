@@ -8,6 +8,7 @@ import { useUserStore } from "@/store/user";
 
 import { TRandomUserData, TUser } from "@/types/user";
 import { ChatSocketProvider } from "./components/pages/chat/ChatSocketProvider";
+import { useChatsStore } from "./store/chats";
 
 async function createNewUser(userData: TRandomUserData) {
   const user = await UserClient.createUser({
@@ -46,6 +47,7 @@ async function initializeUser(callback: (user: TUser) => void) {
 function App() {
   const initialized = useRef(false);
   const { currentUser, updateCurrentUser } = useUserStore();
+  const { selectedChat } = useChatsStore();
 
   useEffect(() => {
     if (initialized.current) return;
@@ -65,7 +67,7 @@ function App() {
         </header>
         <div className="flex-1 pt-5 pb-12 overflow-hidden bg-gray-bg">
           <div className="flex mx-auto border size-full max-w-desktop border-divider">
-            <Chat />
+            <Chat chat={selectedChat} />
             <Sidebar />
           </div>
         </div>

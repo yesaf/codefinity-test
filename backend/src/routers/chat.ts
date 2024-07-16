@@ -1,7 +1,7 @@
 import { ChatController } from "@/controllers/chat";
 import { Router } from "express";
 
-export class UserRouter {
+export class ChatRouter {
   router: Router;
   path: string;
   controller: ChatController;

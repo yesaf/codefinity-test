@@ -7,6 +7,7 @@ import sequelize from "@/config/sequelize";
 import { Boom, isBoom } from "@hapi/boom";
 
 import { UserRouter } from "@/routers/user";
+import { ChatRouter } from "@/routers/chat";
 
 import { socketServer } from "@/socket/socket";
 import { initializeBots } from "./utils/bots";
@@ -22,7 +23,7 @@ import { initializeBots } from "./utils/bots";
   app.use(express.json());
   app.use(cors());
 
-  const routes: any[] = [new UserRouter("/users")];
+  const routes: any[] = [new UserRouter("/users"), new ChatRouter("/chats")];
   routes.forEach((route) => {
     app.use(route.path, route.router);
   });

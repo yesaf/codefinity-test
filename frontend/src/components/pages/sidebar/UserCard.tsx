@@ -5,6 +5,7 @@ import { TUser } from "@/types/user";
 type Props = {
   user: TUser;
   isSelected: boolean;
+  onClick: () => void;
 };
 
 export const UserCard: React.FC<Props> = ({ user, isSelected }) => {

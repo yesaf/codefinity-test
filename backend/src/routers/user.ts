@@ -13,5 +13,6 @@ export class UserRouter {
     this.router.get("/:id", this.controller.getUserById);
     this.router.get("/except/:id", this.controller.getUsersExceptId);
     this.router.post("/", this.controller.createUser);
+    this.router.get("/:id/chats", this.controller.getUserChats);
   }
 }

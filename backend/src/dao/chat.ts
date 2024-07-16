@@ -9,9 +9,10 @@ export class ChatDao {
   public static createChat = async (users: string[]) => {
     const chat = await Chat.create();
     await chat.addUsers(users);
+    console.log("Chat created for users: ", users);
 
     return this.getChatById(chat.id);
-  }
+  };
 
   public static getChatById = async (id: string) => {
     const chat = await Chat.findByPk(id, {
@@ -19,29 +20,36 @@ export class ChatDao {
         {
           model: User,
           as: "users",
-          attributes: ["id", "name", "avatar"],
+          attributes: ["id", "name", "avatar", "description"],
         },
       ],
     });
     return chat;
-  }
+  };
 
   public static getChatsByUserId = async (userId: string) => {
+    // Should also include all the users of chat
+
+    const userChats = await UserChat.findAll({
+      where: {
+        userId: userId,
+      },
+      attributes: ["chatId"],
+    });
     const chats = await Chat.findAll({
+      where: {
+        id: {
+          [Op.in]: userChats.map((uc) => uc.chatId),
+        },
+      },
       include: [
         {
           model: User,
           as: "users",
-          attributes: ["id", "name", "avatar"],
-          through: {
-            where: {
-              userId,
-            },
-            attributes: [],
-          },
+          attributes: ["id", "name", "avatar", "description"],
         },
       ],
     });
     return chats;
-  }
+  };
 }

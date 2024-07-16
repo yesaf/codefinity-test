@@ -19,7 +19,7 @@ export class MessageDao {
         {
           model: User,
           as: "senderInfo",
-          attributes: ["id", "name", "avatar"],
+          attributes: ["id", "name", "avatar", "description"],
         },
       ],
       offset,
@@ -28,4 +28,17 @@ export class MessageDao {
     });
     return messages;
   };
+
+  public static updateMessages = async (chatId: string, userId: string, data: Partial<Message>) => {
+    const messages = await Message.update(data, {
+      where: {
+        chat: chatId,
+        sender: {
+          [Op.ne]: userId,
+        },
+      },
+      returning: true,
+    });
+    return messages;
+  }
 }

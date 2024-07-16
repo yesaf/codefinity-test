@@ -1,9 +1,9 @@
-import { TUser } from "./user";
+import { TUser } from "@/types/user";
 
 export type TMessage = {
   text: string;
   sender: TUser;
-  receiver: TUser;
+  chat: string;
   createdAt: string;
   seenAt?: string | null;
 };
