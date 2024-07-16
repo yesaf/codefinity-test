@@ -81,7 +81,7 @@ function App() {
             </div>
           </header>
           <div className="flex-1 pt-5 pb-12 overflow-hidden bg-gray-bg">
-            <div className="flex mx-auto border size-full max-w-desktop border-divider">
+            <div className="relative flex mx-auto border size-full max-w-desktop border-divider">
               <Chat />
               <Sidebar />
             </div>

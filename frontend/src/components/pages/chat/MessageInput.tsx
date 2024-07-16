@@ -69,7 +69,7 @@ export const MessageInput: React.FC<Props> = ({ chat }) => {
         }}
       />
       <button
-        className="w-[195px] h-[38px] rounded-[5px] bg-blue border-blue-dark border text-white disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-[140px] md:w-[195px] h-[38px] rounded-[5px] bg-blue border-blue-dark border text-white disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={isSendDisabled}
         onClick={handleSendMessage}
       >
