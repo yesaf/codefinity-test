@@ -31,7 +31,7 @@ export const Message: React.FC<Props> = ({ message, showSeenTime }) => {
         <span>{message.senderInfo?.name}</span>
         <span className="opacity-20">{prettifyDate(message.createdAt)}</span>
       </div>
-      <div className="py-2.5 px-4 bg-white rounded-b-lg min-h-[44px]">{message.text}</div>
+      <div className="py-2.5 px-4 bg-white rounded-b-lg min-h-[44px] whitespace-pre-wrap">{message.text}</div>
       <div
         className={
           isCurrentUserSender

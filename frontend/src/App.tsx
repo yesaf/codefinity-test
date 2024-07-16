@@ -41,6 +41,7 @@ async function initializeUser(callback: (user: TUser) => void) {
       callback(user);
     }
   } catch (error) {
+    localStorage.removeItem("currentUserId");
     const newUserData = await UserClient.getRandomUser();
     const description = await UserClient.getLoremIpsum();
     const user = await createNewUser(newUserData, description);

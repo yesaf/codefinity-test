@@ -56,6 +56,7 @@ async function handleConnection(io: Server, socket: Socket, bots: IBot[]) {
         ),
       );
       socket.emit(SocketServerEvents.ChatCreated, newChat);
+      socket.join(newChat.id);
       // Check if the user is online, should join the chat room
       if (
         allSockets[user.id] &&
