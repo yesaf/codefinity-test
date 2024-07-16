@@ -83,7 +83,6 @@ export class ReverseBot extends Bot {
 
 function setRandomInterval(callback: () => void | Promise<void>, min: number, max: number) {
   const timeout = Math.floor(Math.random() * (max - min) + min);
-  console.log("Next message in: ", timeout);
   setTimeout(async () => {
     await callback();
     setRandomInterval(callback, min, max);

@@ -25,10 +25,6 @@ export const Message: React.FC<Props> = ({ message, showSeenTime }) => {
     },
   );
 
-  if (showSeenTime) {
-    console.log(message)
-  }
-
   return (
     <div className={containerClass}>
       <div className={headClass} title={message.senderInfo?.name}>

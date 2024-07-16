@@ -33,12 +33,10 @@ function setupSocketListeners(socket: Socket) {
   });
 
   socket.on(SocketServerEvents.Message, (message: TMessage) => {
-    console.log("Received message: ", message);
     addMessages(message.chat, [message]);
   });
 
   socket.on(SocketServerEvents.SeenUpdate, (data) => {
-    console.log("Received seen update: ", data);
     const { chatId, userId } = data;
 
     updateMessages(chatId, (message) => {

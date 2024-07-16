@@ -11,7 +11,6 @@ export class UserDao {
   };
 
   public static createUser = async (data: Partial<User>) => {
-    console.log(data);
     const user = await User.create(data);
     return user;
   };

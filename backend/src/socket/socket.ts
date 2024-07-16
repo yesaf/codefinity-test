@@ -98,7 +98,7 @@ export const socketServer = (io: Server, bots: IBot[]) => {
     };
 
     const handleDisconnect = async () => {
-      console.log("User disconnected");
+      console.log("User disconnected:", userId);
 
       UserDao.updateUser(userId, { online: false })
         .then(async (user) => {

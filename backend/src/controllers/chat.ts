@@ -15,7 +15,6 @@ export class ChatController {
       );
       return res.status(200).send(chat);
     } catch (error) {
-      console.log("Error in getChatMessages: ", (error as Error)?.message);
       next(error);
     }
   };
