@@ -26,3 +26,8 @@ export const getRandomUser = async (): Promise<TRandomUserData> => {
   const response = await axios.get("https://randomuser.me/api/");
   return response.data;
 }
+
+export const getUserChats = async (userId: string): Promise<TUser[]> => {
+  const response = await httpClient.get(`/users/${userId}/chats`);
+  return response.data;
+}
