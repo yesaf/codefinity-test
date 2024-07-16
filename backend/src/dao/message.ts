@@ -1,6 +1,6 @@
 import { Message } from "@/models/message";
 import { User } from "@/models/user";
-import { Op } from "sequelize";
+import { Op, WhereOptions } from "sequelize";
 
 export class MessageDao {
   constructor() {}
@@ -38,13 +38,16 @@ export class MessageDao {
     return messages;
   };
 
-  public static updateMessages = async (chatId: string, userId: string, data: Partial<Message>) => {
-    const messages = await Message.update(data, {
+  public static updateMessagesSeen = async (chatId: string, userId: string) => {
+    const messages = await Message.update({
+      seenAt: new Date(),
+    }, {
       where: {
         chat: chatId,
-        sender: {
+        senderId: {
           [Op.ne]: userId,
         },
+        seenAt: null,
       },
       returning: true,
     });

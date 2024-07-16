@@ -38,10 +38,11 @@ function setupSocketListeners(socket: Socket) {
   });
 
   socket.on(SocketServerEvents.SeenUpdate, (data) => {
+    console.log("Received seen update: ", data);
     const { chatId, userId } = data;
 
     updateMessages(chatId, (message) => {
-      if (message.senderId === userId) {
+      if (message.senderId !== userId && !message.seenAt) {
         return {
           ...message,
           seenAt: new Date().toISOString(),

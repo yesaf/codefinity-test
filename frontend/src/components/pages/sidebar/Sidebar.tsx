@@ -19,7 +19,7 @@ export const Sidebar: React.FC = () => {
   const [searchText, setSearchText] = useState("");
 
   const { currentUser } = useUserStore();
-  const { chats, selectedChat, selectChat } = useChatsStore();
+  const { chats, selectedChatId, selectChat } = useChatsStore();
 
   // Support only 2-user chats for now
   const users = useMemo(() => {
@@ -62,7 +62,7 @@ export const Sidebar: React.FC = () => {
           <UserCard
             key={user.id}
             user={user}
-            isSelected={chatId === selectedChat?.id}
+            isSelected={chatId === selectedChatId}
             onClick={() => selectChat(chatId)}
           />
         ))}

@@ -4,7 +4,7 @@ import { TMessage } from "@/types/message";
 import { TUser } from "@/types/user";
 
 type TChatsStore = {
-  selectedChat: TChat | null;
+  selectedChatId: string | null;
   chats: TChat[];
   selectChat: (chatId: string) => void;
   setChats: (chats: TChat[]) => void;
@@ -16,15 +16,11 @@ type TChatsStore = {
 };
 
 export const useChatsStore = create<TChatsStore>((set, get) => ({
-  selectedChat: null,
+  selectedChatId: null,
   chats: [],
   selectChat(chatId) {
-    const chat = get().chats.find((c) => c.id === chatId);
-    if (!chat) {
-      return;
-    }
     set({
-      selectedChat: chat,
+      selectedChatId: chatId,
     });
   },
   setChats(chats) {
@@ -44,9 +40,9 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
     });
 
     // Select the first chat if no chat is selected
-    if (!get().selectedChat && mapped.length > 0) {
+    if (!get().selectedChatId && mapped.length > 0) {
       set({
-        selectedChat: mapped[0],
+        selectedChatId: mapped[0].id,
       });
     }
   },
@@ -65,16 +61,6 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
     set({
       chats: updatedChats,
     });
-  
-
-    if (chatId === get().selectedChat?.id) {
-      set({
-        selectedChat: {
-          ...get().selectedChat!,
-          messages: get().selectedChat!.messages.concat(messages),
-        },
-      });
-    }
   },
   updateMessages(chatId, mapFunc) {
     const chats = get().chats;

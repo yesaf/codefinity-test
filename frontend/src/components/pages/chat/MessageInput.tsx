@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useMemo } from "react";
-import { ChatSocketContext } from "@/components/pages/chat/ChatSocketProvider";
+import React, { useEffect, useMemo } from "react";
 import { TUser } from "@/types/user";
 import { TChat } from "@/types/chat";
 import { SocketClientEvents, SocketServerEvents } from "@/types/socket";
+import { useSocket } from "@/utils/useSocket";
 
 type Props = {
-  chat: TChat | null;
+  chat?: TChat | null;
 };
 
 export const MessageInput: React.FC<Props> = ({ chat }) => {
@@ -14,7 +14,7 @@ export const MessageInput: React.FC<Props> = ({ chat }) => {
 
   const isSendDisabled = useMemo(() => message.trim() === "", [message]);
 
-  const socket = useContext(ChatSocketContext);
+  const socket = useSocket();
 
   function handleTypingStatus(isTyping: boolean) {
     if (!socket || !chat) return;

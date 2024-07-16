@@ -118,7 +118,7 @@ export const socketServer = (io: Server, bots: IBot[]) => {
 
     socket.on(SocketClientEvents.SeenUpdate, async (data: any) => {
       const { chatId } = data;
-      await MessageDao.updateMessages(chatId, userId, { seenAt: new Date() });
+      await MessageDao.updateMessagesSeen(chatId, userId);
       io.to(chatId).emit(SocketServerEvents.SeenUpdate, { chatId, userId });
     });
 
