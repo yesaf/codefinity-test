@@ -73,11 +73,15 @@ export class ReverseBot extends Bot {
   async respond(message: Message) {
     const text = message.text.split("").reverse().join("");
 
-    return await MessageDao.createMessage({
-      chat: message.chat,
-      senderId: this.id,
-      text,
-    });
+    return new Promise<Message>((resolve) => {
+      setTimeout(async () => {
+        resolve(await MessageDao.createMessage({
+          chat: message.chat,
+          senderId: this.id,
+          text,
+        }))
+      }, 3000)
+    })
   }
 }
 
