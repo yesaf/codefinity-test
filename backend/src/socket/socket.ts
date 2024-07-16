@@ -30,8 +30,13 @@ async function handleConnection(io: Server, socket: Socket, bots: IBot[]) {
       console.error("Error updating user status: ", error);
     });
 
-  // Check if every user has a chat with the current user
-  const [users, chats] = await Promise.all([UserDao.getAllUsers(), ChatDao.getChatsByUserId(userId)]);
+  // Check if every user has a chat with the current user and create a new chat if not
+  // Also, initialize the chat with the bots
+  // And join the chat room
+  const [users, chats] = await Promise.all([
+    UserDao.getAllUsers(),
+    ChatDao.getChatsByUserId(userId),
+  ]);
   for (const user of users) {
     if (user.id === userId) continue;
 
@@ -41,13 +46,18 @@ async function handleConnection(io: Server, socket: Socket, bots: IBot[]) {
       const chatBots = bots.filter((bot) => newChat.users.find((u) => u.id === bot.id));
       chatBots.forEach((bot) =>
         bot.initializeChat(newChat.id, (message) =>
-          io.to(newChat.id).emit(SocketEvents.Message, { from: bot.id, message }),
+          io.to(newChat.id).emit(SocketEvents.Message, message),
         ),
       );
+      socket.join(newChat.id);
+      // Check if the user is online and join the chat room
+      if (user.online) {
+        io.to(user.id).emit(SocketEvents.ChatCreated, newChat);
+      }
+    } else {
+      socket.join(chat.id);
     }
   }
-
-  socket.broadcast.emit(SocketEvents.UsersUpdated, users);
 }
 
 // Set up the socket server
@@ -60,35 +70,43 @@ export const socketServer = (io: Server, bots: IBot[]) => {
     const handleMessage = async (data: any) => {
       const { chatId, text } = data;
       const message = await MessageDao.createMessage({ chat: chatId, sender: userId, text });
-      io.to(chatId).emit(SocketEvents.Message, { from: userId, message });
+      io.to(chatId).emit(SocketEvents.Message, message);
       handleBotsReaction(message, bots, (response) => {
-        io.to(chatId).emit(SocketEvents.Message, { from: response.sender, message: response });
+        io.to(chatId).emit(SocketEvents.Message, response);
       });
-    }
+    };
 
-    socket.on(SocketEvents.Message, handleMessage);
-
-    // Update typing status
-    socket.on(SocketEvents.TypingStart, (data) => {
+    const handleJoinChat = async (data: any) => {
       const { chatId } = data;
-      io.to(chatId).emit(SocketEvents.TypingStart, { from: userId });
-    });
-    socket.on(SocketEvents.TypingStop, (data) => {
-      const { chatId } = data;
-      io.to(chatId).emit(SocketEvents.TypingStop, { from: userId });
-    });
+      if (!chatId) return;
+      socket.join(chatId);
+    };
 
-    // Disconnect
-    socket.on(SocketEvents.Disconnect, () => {
+    const handleTypingStatus = async (data: any) => {
+      const { chatId, typing } = data;
+      io.to(chatId).emit(SocketEvents.TypingStatus, { user: userId, typing });
+    };
+
+    const handleDisconnect = async () => {
       console.log("User disconnected");
 
       UserDao.updateUser(userId, { online: false })
-        .then(async () => {
-          socket.broadcast.emit(SocketEvents.UsersUpdated);
+        .then(async ([, users]) => {
+          socket.broadcast.emit(SocketEvents.UsersUpdated, users);
         })
         .catch((error) => {
           console.error("Error updating user status: ", error);
         });
-    });
+    };
+
+    socket.on(SocketEvents.Message, handleMessage);
+
+    socket.on(SocketEvents.JoinChat, handleJoinChat);
+
+    // Update typing status
+    socket.on(SocketEvents.TypingStatus, handleTypingStatus);
+
+    // Disconnect
+    socket.on(SocketEvents.Disconnect, handleDisconnect);
   });
 };

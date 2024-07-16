@@ -1,8 +1,8 @@
 export enum SocketEvents {
   Disconnect = "disconnect",
   UsersUpdated = "users-updated",
-  ChatsUpdated = "chats-updated",
+  ChatCreated = "chat-created",
+  JoinChat = "join-chat",
   Message = "message",
-  TypingStart = "typing-start",
-  TypingStop = "typing-stop",
+  TypingStatus = "typing-status",
 }
