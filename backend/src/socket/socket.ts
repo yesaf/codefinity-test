@@ -27,8 +27,8 @@ async function handleConnection(io: Server, socket: Socket, bots: IBot[]) {
   // Update user status to online
   console.log("User connected: ", userId);
   await UserDao.updateUser(userId, { online: true })
-    .then(([, users]) => {
-      socket.broadcast.emit(SocketServerEvents.UsersUpdated, users);
+    .then((user) => {
+      socket.broadcast.emit(SocketServerEvents.UsersUpdated, [user]);
     })
     .catch((error) => {
       console.error("Error updating user status: ", error);
@@ -79,7 +79,7 @@ export const socketServer = (io: Server, bots: IBot[]) => {
 
     const handleMessage = async (data: any) => {
       const { chatId, text } = data;
-      const message = await MessageDao.createMessage({ chat: chatId, sender: userId, text });
+      const message = await MessageDao.createMessage({ chat: chatId, senderId: userId, text });
       io.to(chatId).emit(SocketServerEvents.Message, message);
       handleBotsReaction(message, bots, (response) => {
         io.to(chatId).emit(SocketServerEvents.Message, response);
@@ -101,8 +101,8 @@ export const socketServer = (io: Server, bots: IBot[]) => {
       console.log("User disconnected");
 
       UserDao.updateUser(userId, { online: false })
-        .then(async ([, users]) => {
-          socket.broadcast.emit(SocketServerEvents.UsersUpdated, users);
+        .then(async (user) => {
+          socket.broadcast.emit(SocketServerEvents.UsersUpdated, [user]);
         })
         .catch((error) => {
           console.error("Error updating user status: ", error);

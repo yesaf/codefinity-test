@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const Message: React.FC<Props> = ({ message, showSeenTime }) => {
-  const isCurrentUserSender = currentUser.id === message.sender.id;
+  const isCurrentUserSender = currentUser.id === message.senderId;
   const containerClass = classnames(
     "w-[72%] shadow-md flex flex-col relative mb-4 flex-shrink-0",
     {
@@ -21,10 +21,11 @@ export const Message: React.FC<Props> = ({ message, showSeenTime }) => {
     "bg-peach-light text-peach-text": isCurrentUserSender,
     "bg-gray-mid text-gray-text": !isCurrentUserSender,
   });
+  
 
   return (
     <div className={containerClass}>
-      <div className={headClass}>{message.sender.name}</div>
+      <div className={headClass}>{message.senderInfo.name}</div>
       <div className="py-2.5 px-4 bg-white rounded-b-lg">{message.text}</div>
       <div className={
         isCurrentUserSender

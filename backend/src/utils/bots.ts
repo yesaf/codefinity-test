@@ -55,7 +55,7 @@ export class EchoBot extends Bot {
   async respond(message: Message) {
     return await MessageDao.createMessage({
       chat: message.chat,
-      sender: this.id,
+      senderId: this.id,
       text: message.text,
     });
   }
@@ -75,7 +75,7 @@ export class ReverseBot extends Bot {
 
     return await MessageDao.createMessage({
       chat: message.chat,
-      sender: this.id,
+      senderId: this.id,
       text,
     });
   }
@@ -103,7 +103,7 @@ export class SpamBot extends Bot {
     setRandomInterval(async () => {
       const message = await MessageDao.createMessage({
         chat: chatId,
-        sender: this.id,
+        senderId: this.id,
         text: "Spam!",
       });
       sendMessageCallback(message);

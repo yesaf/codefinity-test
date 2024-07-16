@@ -17,7 +17,7 @@ export function connectSocket(currentUser: TUser): Socket {
 }
 
 function setupSocketListeners(socket: Socket) {
-  const { addChats, addMessages, updateMessages } = useChatsStore.getState();
+  const { addChats, addMessages, updateMessages, updateUsers } = useChatsStore.getState();
 
   socket.on("connect", () => {
     console.log("Connected to socket server");
@@ -28,7 +28,6 @@ function setupSocketListeners(socket: Socket) {
   });
 
   socket.on(SocketServerEvents.ChatCreated, (chat) => {
-    console.log("Chat created: ", chat);
     addChats([chat]);
     socket.emit(SocketClientEvents.JoinChat, { chatId: chat.id });
   });
@@ -41,7 +40,7 @@ function setupSocketListeners(socket: Socket) {
     const { chatId, userId } = data;
 
     updateMessages(chatId, (message) => {
-      if (message.sender === userId) {
+      if (message.senderId === userId) {
         return {
           ...message,
           seenAt: new Date().toISOString(),
@@ -51,4 +50,8 @@ function setupSocketListeners(socket: Socket) {
       return message;
     });
   });
+
+  socket.on(SocketServerEvents.UsersUpdated, (users: TUser[]) => {
+    updateUsers(users);
+  })
 }

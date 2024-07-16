@@ -1,19 +1,22 @@
 import { useEffect, useRef } from "react";
+
 import { Chat } from "@/components/pages/chat/Chat";
 import { Sidebar } from "@/components/pages/sidebar/Sidebar";
+import { ChatSocketProvider } from "@/components/pages/chat/ChatSocketProvider";
 
 import * as UserClient from "@/api/rest/users";
 
 import { useUserStore } from "@/store/user";
+import { useChatsStore } from "@/store/chats";
 
 import { TRandomUserData, TUser } from "@/types/user";
-import { ChatSocketProvider } from "./components/pages/chat/ChatSocketProvider";
-import { useChatsStore } from "./store/chats";
 
-async function createNewUser(userData: TRandomUserData) {
+async function createNewUser(userData: TRandomUserData, description?: string) {
   const user = await UserClient.createUser({
     name: `${userData.results[0].name.first} ${userData.results[0].name.last}`,
     avatar: userData.results[0].picture.large,
+    description,
+    online: true,
   });
   localStorage.setItem("currentUserId", user.id);
 
@@ -25,8 +28,8 @@ async function initializeUser(callback: (user: TUser) => void) {
 
   if (!currentUserId) {
     const newUserData = await UserClient.getRandomUser();
-    console.log(newUserData.results[0]);
-    const user = await createNewUser(newUserData);
+    const description = await UserClient.getLoremIpsum();
+    const user = await createNewUser(newUserData, description);
     callback(user);
     return;
   }
@@ -38,8 +41,8 @@ async function initializeUser(callback: (user: TUser) => void) {
     }
   } catch (error) {
     const newUserData = await UserClient.getRandomUser();
-    console.log(newUserData.results[0]);
-    const user = await createNewUser(newUserData);
+    const description = await UserClient.getLoremIpsum();
+    const user = await createNewUser(newUserData, description);
     callback(user);
   }
 }
@@ -47,7 +50,7 @@ async function initializeUser(callback: (user: TUser) => void) {
 function App() {
   const initialized = useRef(false);
   const { currentUser, updateCurrentUser } = useUserStore();
-  const { selectedChat } = useChatsStore();
+  const { selectedChat, setChats, selectChat, addMessages } = useChatsStore();
 
   useEffect(() => {
     if (initialized.current) return;
@@ -55,7 +58,17 @@ function App() {
     initializeUser(updateCurrentUser);
   }, [updateCurrentUser]);
 
-  console.log(currentUser && { ...currentUser });
+  useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+    UserClient.getUserChats(currentUser.id).then((chats) => {
+      setChats(chats);
+      if (chats.length > 0) {
+        selectChat(chats[0].id);
+      }
+    });
+  }, [currentUser, setChats, selectChat, addMessages]);
 
   return (
     <ChatSocketProvider>

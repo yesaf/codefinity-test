@@ -10,11 +10,12 @@ export class ChatController {
 
       const chat = await MessageDao.getMessagesByChatId(
         req.params.id,
-        Number(offset),
-        Number(limit),
+        offset && Number(offset),
+        limit && Number(limit),
       );
       return res.status(200).send(chat);
     } catch (error) {
+      console.log("Error in getChatMessages: ", (error as Error)?.message);
       next(error);
     }
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import classnames from "classnames";
 
 import { UserCard } from "./UserCard";
@@ -8,7 +8,6 @@ import { useUserStore } from "@/store/user";
 
 import { TUser } from "@/types/user";
 
-import * as UsersClient from "@/api/rest/users";
 
 enum Tab {
   Online = "online",
@@ -20,11 +19,10 @@ export const Sidebar: React.FC = () => {
   const [searchText, setSearchText] = useState("");
 
   const { currentUser } = useUserStore();
-  const { chats, selectedChat, selectChat, setChats } = useChatsStore();
+  const { chats, selectedChat, selectChat } = useChatsStore();
 
   // Support only 2-user chats for now
   const users = useMemo(() => {
-    console.log(chats, currentUser);
     return chats.reduce((acc, chat) => {
       const anotherUser = chat.users.find((user) => user.id !== currentUser?.id)!;
       acc.push({ user: anotherUser, chatId: chat.id });
@@ -33,23 +31,12 @@ export const Sidebar: React.FC = () => {
   }, [chats, currentUser]);
 
   const filteredUsers = useMemo(() => {
-    if (searchText === "") {
-      return users;
-    }
-
     return users
       .filter(({ user }) => user.name.toLowerCase().includes(searchText.toLowerCase()))
-      .filter(({ user }) => activeTab === Tab.All || user.online);
+      .filter(({ user }) => {
+        return activeTab === Tab.All || user.online
+      });
   }, [users, searchText, activeTab]);
-
-  useEffect(() => {
-    if (!currentUser) {
-      return;
-    }
-    UsersClient.getUserChats(currentUser.id).then((chats) => {
-      setChats(chats);
-    });
-  }, [currentUser, setChats]);
 
   const onlineBtnClass = classnames("flex-[0.5] border-b border-transparent text", {
     "border-r border-divider bg-[#f8f8f8] text-[#777777]": activeTab !== Tab.Online,

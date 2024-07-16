@@ -1,5 +1,6 @@
 import {
   AllowNull,
+  BelongsTo,
   Column,
   DataType,
   Default,
@@ -23,7 +24,10 @@ export class Message extends Model {
   @AllowNull(false)
   @ForeignKey(() => User)
   @Column(DataType.CHAR(36))
-  sender: string;
+  senderId: string;
+
+  @BelongsTo(() => User, "senderId")
+  senderInfo: User;
 
   @AllowNull(false)
   @ForeignKey(() => Chat)
@@ -37,5 +41,4 @@ export class Message extends Model {
   @AllowNull(true)
   @Column(DataType.DATE)
   seenAt: Date;
-
 }

@@ -1,4 +1,5 @@
 import { Chat } from "@/models/chat";
+import { Message } from "@/models/message";
 import { User } from "@/models/user";
 import { UserChat } from "@/models/userChat";
 import { Op } from "sequelize";
@@ -20,7 +21,7 @@ export class ChatDao {
         {
           model: User,
           as: "users",
-          attributes: ["id", "name", "avatar", "description"],
+          attributes: ["id", "name", "avatar", "description", "online"],
         },
       ],
     });
@@ -46,8 +47,19 @@ export class ChatDao {
         {
           model: User,
           as: "users",
-          attributes: ["id", "name", "avatar", "description"],
+          attributes: ["id", "name", "avatar", "description", "online"],
         },
+        {
+          model: Message,
+          as: "messages",
+          include: [
+            {
+              model: User,
+              as: "senderInfo",
+              attributes: ["id", "name", "avatar", "description", "online"],
+            },
+          ],
+        }
       ],
     });
     return chats;

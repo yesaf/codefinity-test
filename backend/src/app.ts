@@ -10,12 +10,15 @@ import { UserRouter } from "@/routers/user";
 import { ChatRouter } from "@/routers/chat";
 
 import { socketServer } from "@/socket/socket";
-import { initializeBots } from "./utils/bots";
+
+import { initializeBots } from "@/utils/bots";
 
 (async () => {
   const app = express();
   const PORT = 3000;
 
+  // Drop database if exists
+  await sequelize.drop();
   await sequelize.sync({ force: true });
 
   const bots = initializeBots();
@@ -23,7 +26,7 @@ import { initializeBots } from "./utils/bots";
   app.use(express.json());
   app.use(cors());
 
-  const routes: any[] = [new UserRouter("/users"), new ChatRouter("/chats")];
+  const routes = [new UserRouter("/users"), new ChatRouter("/chats")];
   routes.forEach((route) => {
     app.use(route.path, route.router);
   });

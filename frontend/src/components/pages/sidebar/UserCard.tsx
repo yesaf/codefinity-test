@@ -8,12 +8,12 @@ type Props = {
   onClick: () => void;
 };
 
-export const UserCard: React.FC<Props> = ({ user, isSelected }) => {
+export const UserCard: React.FC<Props> = ({ user, isSelected, onClick }) => {
   const cardContainerClass = classnames("h-[70px] flex px-3.5 py-[5px] gap-3.5", {
     "bg-[#f8f8f8]": isSelected
   })
   return (
-    <div className={cardContainerClass}>
+    <div className={cardContainerClass} role="button" onClick={onClick}>
       <div className="relative flex-shrink-0">
         <img className="size-[60px]" src={user.avatar} />
         {user.online && (

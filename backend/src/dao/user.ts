@@ -26,12 +26,13 @@ export class UserDao {
   };
 
   public static updateUser = async (id: string, updateData: Partial<User>) => {
-    const updatedUser = await User.update(updateData, {
+    await User.update(updateData, {
       where: {
         id: id,
       },
       returning: true,
     });
+    const updatedUser = await User.findByPk(id);
     return updatedUser;
   };
 

@@ -4,10 +4,11 @@ import { MessageInput } from "./MessageInput";
 import { Message } from "./Message";
 
 import { useUserStore } from "@/store/user";
-import { TChatData } from "@/store/chats";
+
+import { TChat } from "@/types/chat";
 
 type Props = {
-  chat: TChatData | null;
+  chat: TChat | null;
 }
 
 export const Chat: React.FC<Props> = ({ chat }) => {
@@ -19,6 +20,8 @@ export const Chat: React.FC<Props> = ({ chat }) => {
     }
     return chat.users.find((user) => user.id !== currentUser.id)!;
   }, [currentUser, chat]);
+
+  console.log(chat);
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-gray-light">

@@ -8,10 +8,12 @@ import {
   PrimaryKey,
   Table,
   BelongsToMany,
+  HasMany,
 } from "sequelize-typescript";
 
 import { Chat } from "@/models/chat";
 import { UserChat } from '@/models/userChat';
+import { Message } from "@/models/message";
 
 @Table({ modelName: "User", timestamps: false })
 export class User extends Model {

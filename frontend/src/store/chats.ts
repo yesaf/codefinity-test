@@ -1,20 +1,18 @@
 import { create } from "zustand";
 import { TChat } from "@/types/chat";
 import { TMessage } from "@/types/message";
-
-export type TChatData = TChat & {
-  messages: TMessage[];
-};
+import { TUser } from "@/types/user";
 
 type TChatsStore = {
-  selectedChat: TChatData | null;
-  chats: TChatData[];
+  selectedChat: TChat | null;
+  chats: TChat[];
   selectChat: (chatId: string) => void;
   setChats: (chats: TChat[]) => void;
   addChats: (chats: TChat[]) => void;
   addMessages: (chatId: string, messages: TMessage[]) => void;
   updateMessages: (chatId: string, mapFunc: (m: TMessage) => TMessage) => void;
-  getUserChats: (userId: string) => TChatData[];
+  getUserChats: (userId: string) => TChat[];
+  updateUsers: (users: TUser[]) => void;
 };
 
 export const useChatsStore = create<TChatsStore>((set, get) => ({
@@ -30,16 +28,12 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
     });
   },
   setChats(chats) {
-    const mapped: TChatData[] = chats.map((chat) => ({
-      ...chat,
-      messages: [],
-    }));
     set({
-      chats: mapped,
+      chats,
     });
   },
   addChats(chats) {
-    const mapped: TChatData[] = chats
+    const mapped: TChat[] = chats
       .filter((chat) => !get().chats.some((c) => c.id === chat.id))
       .map((chat) => ({
         ...chat,
@@ -48,6 +42,13 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
     set({
       chats: get().chats.concat(mapped),
     });
+
+    // Select the first chat if no chat is selected
+    if (!get().selectedChat && mapped.length > 0) {
+      set({
+        selectedChat: mapped[0],
+      });
+    }
   },
   addMessages(chatId, messages) {
     const chats = get().chats;
@@ -83,5 +84,27 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
   },
   getUserChats(userId) {
     return get().chats.filter((chat) => chat.users.find((user) => user.id === userId));
-  }
+  },
+  updateUsers(users) {
+    console.log("Updating users", users);
+    const chats = get().chats;
+    const updatedChats = chats.map((chat) => {
+      const updatedUsers = chat.users.map((user) => {
+        const updatedUser = users.find((u) => u.id === user.id);
+        if (!updatedUser) {
+          return user;
+        }
+
+        return updatedUser;
+      });
+
+      return {
+        ...chat,
+        users: updatedUsers,
+      };
+    });
+    set({
+      chats: updatedChats,
+    });
+  },
 }));

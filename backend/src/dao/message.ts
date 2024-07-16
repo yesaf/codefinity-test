@@ -19,7 +19,7 @@ export class MessageDao {
         {
           model: User,
           as: "senderInfo",
-          attributes: ["id", "name", "avatar", "description"],
+          attributes: ["id", "name", "avatar", "description", "online"],
         },
       ],
       offset,
