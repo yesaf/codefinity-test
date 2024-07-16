@@ -4,6 +4,7 @@ import { UserDao } from "@/dao/user";
 import { SocketClientEvents, SocketServerEvents } from "@/types/socket";
 import { IBot, handleBotsReaction } from "@/utils/bots";
 import { MessageDao } from "@/dao/message";
+import { User } from "@/models/user";
 
 const allSockets: Record<string, Socket> = {};
 
@@ -11,16 +12,15 @@ async function handleConnection(io: Server, socket: Socket, bots: IBot[]) {
   let userId = socket.handshake.query.userId as string;
 
   // Check if the user exists
-  UserDao.getUserById(userId)
-    .then((user) => {
-      if (!user) {
-        socket.disconnect();
-      }
-    })
-    .catch((error) => {
-      console.error("Error getting user: ", error);
-      socket.disconnect();
-    });
+  const user: User | null = await UserDao.getUserById(userId).catch((error) => {
+    console.error("Error getting user: ", error);
+    socket.disconnect();
+    return null;
+  });
+  if (!user) {
+    socket.disconnect();
+    return;
+  }
 
   allSockets[userId] = socket;
 
@@ -93,8 +93,8 @@ export const socketServer = (io: Server, bots: IBot[]) => {
     };
 
     const handleTypingStatus = async (data: any) => {
-      const { chatId, typing } = data;
-      io.to(chatId).emit(SocketServerEvents.TypingStatus, { user: userId, typing });
+      const { chatId, isTyping } = data;
+      socket.to(chatId).emit(SocketServerEvents.TypingStatus, { chatId, userId, isTyping });
     };
 
     const handleDisconnect = async () => {

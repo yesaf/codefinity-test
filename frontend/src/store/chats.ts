@@ -65,6 +65,16 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
     set({
       chats: updatedChats,
     });
+  
+
+    if (chatId === get().selectedChat?.id) {
+      set({
+        selectedChat: {
+          ...get().selectedChat!,
+          messages: get().selectedChat!.messages.concat(messages),
+        },
+      });
+    }
   },
   updateMessages(chatId, mapFunc) {
     const chats = get().chats;
@@ -86,7 +96,6 @@ export const useChatsStore = create<TChatsStore>((set, get) => ({
     return get().chats.filter((chat) => chat.users.find((user) => user.id === userId));
   },
   updateUsers(users) {
-    console.log("Updating users", users);
     const chats = get().chats;
     const updatedChats = chats.map((chat) => {
       const updatedUsers = chat.users.map((user) => {

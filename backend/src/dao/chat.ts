@@ -59,8 +59,9 @@ export class ChatDao {
               attributes: ["id", "name", "avatar", "description", "online"],
             },
           ],
-        }
+        },
       ],
+      order: [[{ model: Message, as: "messages" }, "createdAt", "ASC"]],
     });
     return chats;
   };

@@ -33,6 +33,7 @@ function setupSocketListeners(socket: Socket) {
   });
 
   socket.on(SocketServerEvents.Message, (message: TMessage) => {
+    console.log("Received message: ", message);
     addMessages(message.chat, [message]);
   });
 

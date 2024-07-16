@@ -6,7 +6,16 @@ export class MessageDao {
   constructor() {}
 
   public static createMessage = async (data: Partial<Message>) => {
-    const message = await Message.create(data);
+    const { id } = await Message.create(data);
+    const message = await Message.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: "senderInfo",
+          attributes: ["id", "name", "avatar", "description", "online"],
+        },
+      ],
+    });
     return message;
   };
 

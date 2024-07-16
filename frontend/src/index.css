@@ -33,10 +33,48 @@ body,
 
 @layer components {
   .message-tail-left {
-    @apply absolute right-full w-0 h-0 border-r-[10px] border-t-[10px] border-b-[10px] border-transparent;
+    @apply absolute right-full w-0 h-0 border-r-[10px] border-t-[10px] border-b-[10px] border-transparent z-10;
   }
   .message-tail-right {
-    @apply absolute left-full w-0 h-0 border-l-[10px] border-t-[10px] border-b-[10px] border-transparent;
+    @apply absolute left-full w-0 h-0 border-l-[10px] border-t-[10px] border-b-[10px] border-transparent z-10;
+  }
+
+  .message-tail-left::before {
+    /* Box shadow around the tail */
+    content: "";
+    position: absolute;
+    top: -7px;
+    right: -17px;
+    width: 14px;
+    height: 14px;
+    background: transparent;
+
+    /* only left side shadow */
+    box-shadow: -10px 0 15px -3px rgb(0 0 0 / 0.1), -4px 0 6px -4px rgb(0 0 0 / 0.1);
+    
+    transform: rotate(45deg);
+
+    z-index: 0;
+  }
+
+  .message-tail-right::before {
+    /* Box shadow around the tail */
+    content: "";
+    position: absolute;
+    top: -7px;
+    left: -17px;
+    width: 14px;
+    height: 14px;
+    background: transparent;
+
+    /* only right side shadow */
+    box-shadow: 10px 0 15px -3px rgb(0 0 0 / 0.1), 4px 0 6px -4px rgb(0 0 0 / 0.1);
+    
+
+    transform: rotate(45deg);
+
+    z-index: 0;
+
   }
 }
 

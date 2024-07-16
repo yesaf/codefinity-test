@@ -2,9 +2,10 @@ import http from "http";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import { Server } from "socket.io";
-import sequelize from "@/config/sequelize";
-
+import fs from "fs";
 import { Boom, isBoom } from "@hapi/boom";
+
+import sequelize, { dbPath } from "@/config/sequelize";
 
 import { UserRouter } from "@/routers/user";
 import { ChatRouter } from "@/routers/chat";
@@ -17,8 +18,10 @@ import { initializeBots } from "@/utils/bots";
   const app = express();
   const PORT = 3000;
 
-  // Drop database if exists
-  await sequelize.drop();
+  // Delete database if exists
+  if (fs.existsSync(dbPath)) {
+    await fs.unlink(dbPath, () => {});
+  }
   await sequelize.sync({ force: true });
 
   const bots = initializeBots();

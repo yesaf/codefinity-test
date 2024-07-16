@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { Chat } from "@/components/pages/chat/Chat";
 import { Sidebar } from "@/components/pages/sidebar/Sidebar";
 import { ChatSocketProvider } from "@/components/pages/chat/ChatSocketProvider";
+import { Loader } from "@/components/shared/Loader";
 
 import * as UserClient from "@/api/rest/users";
 
@@ -50,7 +51,7 @@ async function initializeUser(callback: (user: TUser) => void) {
 function App() {
   const initialized = useRef(false);
   const { currentUser, updateCurrentUser } = useUserStore();
-  const { selectedChat, setChats, selectChat, addMessages } = useChatsStore();
+  const { setChats, selectChat, addMessages } = useChatsStore();
 
   useEffect(() => {
     if (initialized.current) return;
@@ -72,19 +73,27 @@ function App() {
 
   return (
     <ChatSocketProvider>
-      <div className="flex flex-col h-full max-h-full overflow-hidden">
-        <header className="pt-[13px]">
-          <div className="mx-auto max-w-desktop">
-            <h1>Chat bots 2.0</h1>
-          </div>
-        </header>
-        <div className="flex-1 pt-5 pb-12 overflow-hidden bg-gray-bg">
-          <div className="flex mx-auto border size-full max-w-desktop border-divider">
-            <Chat chat={selectedChat} />
-            <Sidebar />
+      {currentUser && (
+        <div className="flex flex-col h-full max-h-full overflow-hidden">
+          <header className="pt-[13px]">
+            <div className="mx-auto max-w-desktop">
+              <h1>Chat bots 2.0</h1>
+            </div>
+          </header>
+          <div className="flex-1 pt-5 pb-12 overflow-hidden bg-gray-bg">
+            <div className="flex mx-auto border size-full max-w-desktop border-divider">
+              <Chat />
+              <Sidebar />
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {!currentUser && (
+        <div className="flex items-center justify-center h-screen bg-gray-bg">
+          <Loader />
+        </div>
+      )}
     </ChatSocketProvider>
   );
 }

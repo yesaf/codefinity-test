@@ -7,7 +7,8 @@ export function isToday(date: Date) {
 export function prettifyDate(date: string | Date) {
   const parsedDate = new Date(date);
 
+
   return isToday(parsedDate)
-    ? parsedDate.toLocaleTimeString([], { hourCycle: "h12", timeStyle: "short" })
+    ? parsedDate.toLocaleTimeString([], { hourCycle: "h12", timeStyle: "short" }).toUpperCase().replace(" ", "")
     : ``;
 }
